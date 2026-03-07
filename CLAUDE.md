@@ -2,7 +2,7 @@
 
 ## 기술 스택
 
-- **프론트엔드**: React, TypeScript
+- **프론트엔드**: Vite + React + TypeScript
 - **백엔드(BaaS)**: Supabase (PostgreSQL, Auth, Storage, Edge Functions)
 - **린트/포매팅**: Biome
 - **테스트**: Vitest

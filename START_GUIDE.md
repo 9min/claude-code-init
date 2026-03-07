@@ -34,7 +34,7 @@ Step 5. 프로젝트 초기 코드 세팅
 
 | 항목 | 기본값 |
 |------|--------|
-| 프론트엔드 프레임워크 | React + TypeScript |
+| 프론트엔드 프레임워크 | Vite + React + TypeScript |
 | 백엔드(BaaS) | Supabase (PostgreSQL, Auth, Storage, Edge Functions) |
 | CSS 프레임워크 | Tailwind CSS |
 | 상태 관리 | 없음 (사용자 지정 시 추가) |
@@ -122,7 +122,7 @@ docs/prd.md  (새로 생성)
 
 #### 3-3. 기술 스택 업데이트
 
-사용자가 지정한 기술 스택으로 변경한다. 기본 스택(React, TypeScript, Supabase, Biome, Vitest, Vercel)에서 달라지는 부분만 수정한다.
+사용자가 지정한 기술 스택으로 변경한다. 기본 스택(Vite, React, TypeScript, Supabase, Biome, Vitest, Vercel)에서 달라지는 부분만 수정한다.
 
 추가될 수 있는 항목:
 - 상태 관리 라이브러리

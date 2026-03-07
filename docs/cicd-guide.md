@@ -14,7 +14,7 @@
 |------|--------|---------|
 | Production | `main` 머지 | `project.vercel.app` |
 | Preview | PR 생성/업데이트 | `project-{hash}.vercel.app` |
-| Development | 로컬 | `localhost:3000` |
+| Development | 로컬 | `localhost:5173` |
 
 ### Preview 배포 활용
 
