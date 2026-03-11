@@ -1,5 +1,125 @@
 # 테스트 코드 가이드
 
+## 개발 방법론: TDD (Test-Driven Development)
+
+본 프로젝트는 **TDD 방식**으로 개발한다. 모든 기능 개발 시 아래 사이클을 따른다.
+
+### TDD 사이클
+
+1. **Red**: 실패하는 테스트를 먼저 작성한다.
+2. **Green**: 테스트를 통과하는 **최소한의** 구현 코드를 작성한다.
+3. **Refactor**: 테스트가 통과하는 상태를 유지하면서 코드를 개선한다.
+
+### TDD 개발 흐름
+
+```
+1. 요구사항 분석
+2. 테스트 케이스 설계 (정상 케이스 + 엣지 케이스)
+3. 테스트 코드 작성 (Red - 컴파일/실행 실패 확인)
+4. 최소 구현 (Green - 테스트 통과 확인)
+5. 리팩토링 (Refactor - 테스트 통과 유지)
+6. 2~5 반복
+```
+
+### TDD 실천 예시
+
+```ts
+// 1단계: Red - 실패하는 테스트 작성
+import { describe, it, expect } from "vitest";
+import { validateEmail } from "@/utils/validateEmail";
+
+describe("validateEmail", () => {
+  it("올바른 이메일 형식이면 true를 반환한다", () => {
+    expect(validateEmail("user@example.com")).toBe(true);
+  });
+
+  it("@가 없으면 false를 반환한다", () => {
+    expect(validateEmail("userexample.com")).toBe(false);
+  });
+
+  it("빈 문자열이면 false를 반환한다", () => {
+    expect(validateEmail("")).toBe(false);
+  });
+});
+
+// 2단계: Green - 테스트를 통과하는 최소 구현
+// src/utils/validateEmail.ts
+export function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// 3단계: Refactor - 필요 시 코드 개선 (테스트 통과 유지)
+```
+
+### TDD 적용 범위
+
+| 대상 | TDD 적용 | 비고 |
+|------|---------|------|
+| 유틸리티 함수 | 필수 | 순수 함수이므로 TDD에 가장 적합 |
+| 서비스 함수 | 필수 | 비즈니스 로직의 핵심 |
+| 커스텀 훅 | 필수 | 상태 로직 검증 |
+| 컴포넌트 | 권장 | 사용자 인터랙션 중심으로 테스트 |
+| E2E 시나리오 | 선택 | 핵심 플로우에 한해 적용 |
+
+### TDD 주의사항
+
+- 한 번에 하나의 테스트만 추가한다. 여러 테스트를 동시에 작성하지 않는다.
+- Green 단계에서는 테스트를 통과하는 **가장 단순한 코드**를 작성한다. 과도한 설계를 하지 않는다.
+- Refactor 단계에서 새로운 기능을 추가하지 않는다. 기능 추가는 새 테스트부터 시작한다.
+- 테스트가 실패하는 상태에서 다른 기능 개발로 넘어가지 않는다.
+
+### TDD + 보안 검토 통합 프로세스
+
+기능 개발 시 TDD 사이클과 보안 검토를 아래 순서로 통합하여 진행한다.
+
+```
+1. 요구사항 분석
+2. 테스트 케이스 설계 (기능 + 보안 테스트 포함)
+3. TDD 사이클 (Red → Green → Refactor)
+4. 보안 검토 (아래 체크리스트 점검)
+5. 코드 리뷰
+```
+
+#### 기능 개발 시 보안 검토 체크리스트
+
+기능 구현을 완료할 때마다 아래 항목을 점검한다.
+
+- [ ] **입력 검증**: 사용자 입력에 대해 zod 등으로 스키마 검증을 적용했는가?
+- [ ] **인젝션 방지**: Supabase Client 메서드를 사용하고, 직접 SQL 문자열 결합을 하지 않았는가?
+- [ ] **XSS 방지**: `dangerouslySetInnerHTML`을 사용하지 않았는가? 불가피한 경우 새니타이즈했는가?
+- [ ] **인증/인가**: 보호가 필요한 데이터/페이지에 인증 확인이 적용되었는가?
+- [ ] **RLS 정책**: 새로 추가한 테이블에 RLS가 활성화되고 적절한 정책이 설정되었는가?
+- [ ] **시크릿 노출**: 코드에 API 키, 비밀번호 등이 하드코딩되지 않았는가?
+- [ ] **에러 노출**: 에러 메시지에 내부 구현 세부사항(스택 트레이스, DB 스키마 등)이 노출되지 않는가?
+- [ ] **권한 경계**: 다른 사용자의 데이터에 접근할 수 없는가? (수평적 권한 상승 방지)
+
+#### 보안 테스트 작성 예시
+
+```ts
+describe("TodoService 보안", () => {
+  it("다른 사용자의 할 일을 수정할 수 없다", async () => {
+    mockAuthenticated({ id: "user-1" });
+    const otherUserTodo = createTestTodo({ user_id: "user-2" });
+
+    await expect(
+      updateTodo(otherUserTodo.id, { title: "변경 시도" })
+    ).rejects.toThrow();
+  });
+
+  it("제목이 200자를 초과하면 생성에 실패한다", async () => {
+    const longTitle = "가".repeat(201);
+    await expect(createTodo({ title: longTitle })).rejects.toThrow();
+  });
+
+  it("HTML 태그가 포함된 입력을 안전하게 처리한다", () => {
+    const maliciousInput = '<script>alert("xss")</script>';
+    render(<TodoItem title={maliciousInput} />);
+    expect(screen.queryByText(maliciousInput)).toBeInTheDocument();
+    expect(document.querySelector("script")).toBeNull();
+  });
+});
+```
+
 ## 테스트 도구
 
 - **테스트 프레임워크**: Vitest
