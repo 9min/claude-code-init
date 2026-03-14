@@ -103,6 +103,28 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npm run build
+
+  e2e:
+    name: E2E 테스트
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+        env:
+          CI: true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
 ```
 
 ### 워크플로우 구성
@@ -113,6 +135,7 @@ jobs:
 | `type-check` | TypeScript 타입 검사 | O |
 | `test` | Vitest 테스트 실행 | O |
 | `build` | 빌드 성공 확인 | O |
+| `e2e` | Playwright E2E 테스트 실행 | O |
 
 ### 브랜치 보호 규칙과 연동
 
@@ -122,6 +145,7 @@ GitHub 저장소 설정에서 다음 상태 체크를 필수로 지정한다:
 - `type-check`
 - `test`
 - `build`
+- `e2e`
 
 모든 체크가 통과해야 PR 머지가 가능하다.
 
@@ -187,6 +211,7 @@ npx supabase functions deploy
 - [ ] RLS 정책이 모든 테이블에 적용되었는지 확인
 - [ ] Edge Functions 배포 여부 확인 (변경된 경우)
 - [ ] 타입 파일(`database.ts`) 최신 상태 확인
+- [ ] E2E 테스트 통과 확인
 - [ ] 롤백 계획 수립
 
 ## 관련 문서
