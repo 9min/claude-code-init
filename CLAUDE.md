@@ -90,3 +90,4 @@
 | [docs/state-management.md](docs/state-management.md) | 상태 관리 전략 |
 | [docs/performance-guide.md](docs/performance-guide.md) | 성능 최적화 가이드 |
 | [docs/data-modeling.md](docs/data-modeling.md) | 데이터 모델링 가이드 |
+| [docs/maintainability-guide.md](docs/maintainability-guide.md) | 유지보수 가이드 (아키텍처·설계 원칙) |
