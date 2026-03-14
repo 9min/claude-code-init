@@ -138,16 +138,18 @@ describe("TodoService 보안", () => {
 │   ├── components/LoginForm.tsx
 │   ├── hooks/useAuth.ts
 │   └── services/authService.ts
-└── tests/
-    ├── components/LoginForm.test.tsx
-    ├── hooks/useAuth.test.ts
-    └── services/authService.test.ts
+├── tests/
+│   ├── components/LoginForm.test.tsx
+│   ├── hooks/useAuth.test.ts
+│   └── services/authService.test.ts
+└── e2e/
+    └── auth.e2e.spec.ts
 ```
 
 ### 파일 네이밍
 
 - 단위/통합 테스트: `*.test.ts` 또는 `*.test.tsx`
-- E2E 테스트: `*.e2e.test.ts`
+- E2E 테스트: `*.e2e.spec.ts` (Playwright 관례, Vitest `*.test.ts` 패턴과 명확히 구분)
 
 ## 테스트 종류 및 범위
 
@@ -204,6 +206,70 @@ describe("LoginForm", () => {
 - **대상**: 핵심 사용자 시나리오 (로그인, 결제 등)
 - **목표**: 전체 시스템의 동작 검증
 - **비율**: 전체 테스트의 약 10%
+- **도구**: Playwright (`@playwright/test`)
+
+#### Playwright 설치
+
+```bash
+npm install -D @playwright/test
+npx playwright install chromium
+```
+
+#### playwright.config.ts 설정
+
+```ts
+import { defineConfig, devices } from "@playwright/test";
+
+export default defineConfig({
+  testDir: "./e2e",
+  use: { baseURL: "http://localhost:4173" },
+  webServer: {
+    command: "npm run build && npx vite preview",
+    port: 4173,
+    reuseExistingServer: !process.env.CI,
+  },
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+});
+```
+
+> `reuseExistingServer: !process.env.CI` 설정으로 로컬에서는 기존 서버를 재사용하고, CI에서는 항상 새로 빌드한다.
+
+#### E2E 테스트 예시 (`e2e/auth.e2e.spec.ts`)
+
+```ts
+import { test, expect } from "@playwright/test";
+
+test.describe("인증 플로우", () => {
+  test("로그인 후 대시보드로 이동한다", async ({ page }) => {
+    await page.goto("/login");
+    await page.getByLabel("이메일").fill("test@example.com");
+    await page.getByLabel("비밀번호").fill("password123");
+    await page.getByRole("button", { name: "로그인" }).click();
+    await expect(page).toHaveURL("/dashboard");
+  });
+
+  test("잘못된 비밀번호로 오류 메시지가 표시된다", async ({ page }) => {
+    await page.goto("/login");
+    await page.getByLabel("이메일").fill("test@example.com");
+    await page.getByLabel("비밀번호").fill("wrongpassword");
+    await page.getByRole("button", { name: "로그인" }).click();
+    await expect(page.getByRole("alert")).toBeVisible();
+  });
+});
+```
+
+#### 로컬 실행 명령어
+
+```bash
+# 헤드리스 실행
+npx playwright test
+
+# UI 모드 (디버깅 시 유용)
+npx playwright test --ui
+
+# 특정 파일만 실행
+npx playwright test e2e/auth.e2e.spec.ts
+```
 
 ## 테스트 커버리지
 
