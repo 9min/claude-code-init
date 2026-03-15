@@ -62,12 +62,35 @@ git checkout -b feature/기능명
 
 ## 브랜치 보호 규칙
 
-`main` 브랜치에 다음 보호 규칙을 적용한다:
+### GitHub 설정 경로
 
-- 직접 푸시 금지 (PR을 통해서만 머지)
-- 최소 1명의 리뷰 승인 필요
-- 상태 체크 통과 필수 (CI/CD)
-- 리뷰 승인 후 새 커밋 시 재승인 필요
+`GitHub → Repository Settings → Branches → Add branch protection rule`
+
+- **Branch name pattern**: `main`
+
+### 적용 규칙
+
+| 규칙 | 설정 |
+|------|------|
+| Require a pull request before merging | ✅ 활성화 |
+| Required approvals | 1명 이상 |
+| Dismiss stale reviews when new commits are pushed | ✅ 활성화 |
+| Require status checks to pass before merging | ✅ 활성화 |
+| Require branches to be up to date before merging | ✅ 활성화 |
+| Do not allow bypassing the above settings | ✅ 활성화 |
+
+### 필수 상태 체크 (Status Checks)
+
+"Require status checks to pass before merging" 활성화 후 검색창에서 다음 Job을 추가한다:
+
+- `린트 검사` (`lint`)
+- `타입 검사` (`type-check`)
+- `테스트` (`test`)
+- `빌드` (`build`)
+- `E2E 테스트` (`e2e`)
+
+> 상태 체크 항목은 GitHub Actions CI가 최소 1회 실행된 후 검색창에 표시된다.
+> CI 워크플로우 설정은 [CI/CD 가이드](cicd-guide.md)를 참조한다.
 
 ## 관련 문서
 
