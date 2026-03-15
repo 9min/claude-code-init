@@ -139,15 +139,27 @@ jobs:
 
 ### 브랜치 보호 규칙과 연동
 
-GitHub 저장소 설정에서 다음 상태 체크를 필수로 지정한다:
+`GitHub → Repository Settings → Branches → Add branch protection rule`에서 `main` 브랜치에 다음을 설정한다.
 
-- `lint`
-- `type-check`
-- `test`
-- `build`
-- `e2e`
+**1. "Require status checks to pass before merging" 활성화**
 
-모든 체크가 통과해야 PR 머지가 가능하다.
+아래 Job 이름을 검색하여 필수 상태 체크로 추가한다:
+
+| Job 이름 | 설명 |
+|----------|------|
+| `린트 검사` | Biome 린트/포매팅 검사 |
+| `타입 검사` | TypeScript 타입 검사 |
+| `테스트` | Vitest 단위·통합 테스트 |
+| `빌드` | 빌드 성공 확인 |
+| `E2E 테스트` | Playwright E2E 테스트 |
+
+**2. "Require branches to be up to date before merging" 활성화**
+
+머지 전 `main` 브랜치 최신 상태 동기화를 강제한다.
+
+> 상태 체크 항목은 GitHub Actions CI가 최소 1회 실행된 후 검색창에 표시된다.
+
+모든 체크가 통과해야 PR 머지가 가능하다. 전체 브랜치 보호 규칙은 [Git 워크플로우](git-workflow.md)를 참조한다.
 
 ## Supabase 배포
 
