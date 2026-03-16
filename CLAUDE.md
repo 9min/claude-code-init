@@ -28,10 +28,16 @@
   - 타입/인터페이스: `PascalCase`
   - 파일명: 컴포넌트는 `PascalCase.tsx`, 그 외는 `camelCase.ts`
 
+### 커밋 및 푸시
+
+- **작업 완료 후 커밋/푸시는 직접 요청받았을 때만 진행한다.** 명시적 요청 없이 자동으로 커밋하거나 푸시하지 않는다.
+
 ### 브랜치 전략
 
-- GitHub Flow 기반: `main` → `feature/*`, `fix/*`, `hotfix/*`
-- 직접 `main` 푸시 금지. 반드시 PR을 통해 머지한다.
+- GitHub Flow 기반: `main`(또는 `master`) → `feature/*`, `fix/*`, `hotfix/*`
+- **`main` 또는 `master` 브랜치에 직접 커밋하거나 푸시하는 것은 절대 금지한다.** 어떤 상황에서도 예외 없이 반드시 feature 브랜치를 생성한 후 PR을 통해 머지한다.
+- 작업 시작 전 현재 브랜치를 반드시 확인한다. `main` 또는 `master` 브랜치에 있다면 즉시 작업 브랜치로 전환한다.
+- `git push --force` 및 프로덕션 브랜치(`main`, `master`)로의 직접 푸시는 사용하지 않는다.
 
 ### 커밋 컨벤션
 

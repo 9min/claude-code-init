@@ -4,7 +4,8 @@
 
 ### 메인 브랜치
 
-- `main`: 프로덕션 브랜치. 항상 배포 가능한 상태를 유지한다.
+- `main` 또는 `master`: 프로덕션 브랜치. 항상 배포 가능한 상태를 유지한다.
+- 프로젝트마다 메인 브랜치 이름이 다를 수 있으므로, 작업 시작 전 `git branch` 또는 `git remote show origin`으로 반드시 확인한다.
 
 ### 작업 브랜치 네이밍
 
@@ -66,7 +67,7 @@ git checkout -b feature/기능명
 
 `GitHub → Repository Settings → Branches → Add branch protection rule`
 
-- **Branch name pattern**: `main`
+- **Branch name pattern**: `main` 또는 `master` (프로젝트의 기본 브랜치명에 맞게 설정)
 
 ### 적용 규칙
 
