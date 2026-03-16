@@ -139,27 +139,37 @@ jobs:
 
 ### 브랜치 보호 규칙과 연동
 
-`GitHub → Repository Settings → Branches → Add branch protection rule`에서 `main` 브랜치에 다음을 설정한다.
+CI 실패 시 PR 머지를 차단하려면 GitHub Branch Protection Rules 설정이 필수다.
+
+`GitHub → Repository Settings → Branches → Add branch protection rule`에서 `main` 또는 `master` 브랜치에 다음을 설정한다.
 
 **1. "Require status checks to pass before merging" 활성화**
 
-아래 Job 이름을 검색하여 필수 상태 체크로 추가한다:
+검색창에 아래 항목을 **정확히** 입력하여 필수 상태 체크로 추가한다.
 
-| Job 이름 | 설명 |
-|----------|------|
-| `린트 검사` | Biome 린트/포매팅 검사 |
-| `타입 검사` | TypeScript 타입 검사 |
-| `테스트` | Vitest 단위·통합 테스트 |
-| `빌드` | 빌드 성공 확인 |
-| `E2E 테스트` | Playwright E2E 테스트 |
+> 상태 체크 이름 형식: `{workflow name} / {job name}`
+> 이 워크플로우의 `name: CI`이므로 앞에 `CI / `가 붙는다.
+
+| 검색어 (정확히 입력) | 설명 |
+|---------------------|------|
+| `CI / 린트 검사` | Biome 린트/포매팅 검사 |
+| `CI / 타입 검사` | TypeScript 타입 검사 |
+| `CI / 테스트` | Vitest 단위·통합 테스트 |
+| `CI / 빌드` | 빌드 성공 확인 |
+| `CI / E2E 테스트` | Playwright E2E 테스트 |
 
 **2. "Require branches to be up to date before merging" 활성화**
 
 머지 전 `main` 브랜치 최신 상태 동기화를 강제한다.
 
-> 상태 체크 항목은 GitHub Actions CI가 최소 1회 실행된 후 검색창에 표시된다.
+**3. "Do not allow bypassing the above settings" 활성화**
 
-모든 체크가 통과해야 PR 머지가 가능하다. 전체 브랜치 보호 규칙은 [Git 워크플로우](git-workflow.md)를 참조한다.
+Repository Admin도 CI를 우회하여 머지할 수 없도록 설정한다.
+
+> 상태 체크 항목은 GitHub Actions CI가 최소 1회 실행된 후 검색창에 표시된다.
+> workflow `name:` 또는 job `name:` 값을 변경하면 보호 규칙에 재등록해야 한다.
+
+모든 필수 체크가 통과해야만 PR 머지 버튼이 활성화된다. 상세 설정 방법은 [Git 워크플로우](git-workflow.md)를 참조한다.
 
 ## Supabase 배포
 
