@@ -5,9 +5,9 @@
 | 도구 | 최소 버전 | 비고 |
 |------|----------|------|
 | Node.js | >= 20 | LTS 권장 |
-| npm | >= 10 | Node.js 20과 함께 설치됨 |
+| pnpm | >= 9 | `corepack enable`으로 활성화 |
 | Docker Desktop | 최신 | Supabase 로컬 실행용 |
-| Supabase CLI | 최신 | `npm install -D supabase`로 설치 |
+| Supabase CLI | 최신 | `pnpm add -D supabase`로 설치 |
 
 ## Supabase 로컬 환경
 
@@ -134,7 +134,7 @@ npx supabase start
 cp .env.example .env.local
 
 # 3. 개발 서버 실행
-npm run dev
+pnpm run dev
 ```
 
 ### package.json scripts 예제

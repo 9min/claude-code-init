@@ -211,7 +211,7 @@ describe("LoginForm", () => {
 #### Playwright 설치
 
 ```bash
-npm install -D @playwright/test
+pnpm add -D @playwright/test
 npx playwright install chromium
 ```
 
@@ -224,7 +224,7 @@ export default defineConfig({
   testDir: "./e2e",
   use: { baseURL: "http://localhost:4173" },
   webServer: {
-    command: "npm run build && npx vite preview",
+    command: "pnpm run build && npx vite preview",
     port: 4173,
     reuseExistingServer: !process.env.CI,
   },
