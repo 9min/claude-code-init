@@ -60,36 +60,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
-      - run: npm ci
-      - run: npx biome check .
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm biome check .
 
   type-check:
     name: 타입 검사
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
-      - run: npm ci
-      - run: npx tsc --noEmit
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm tsc --noEmit
 
   test:
     name: 테스트
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
-      - run: npm ci
-      - run: npx vitest run --coverage
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm vitest run --coverage
 
   build:
     name: 빌드
@@ -97,12 +100,13 @@ jobs:
     needs: [lint, type-check, test]
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
 
   e2e:
     name: E2E 테스트
@@ -110,11 +114,12 @@ jobs:
     needs: [build]
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
-      - run: npm ci
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test
         env:

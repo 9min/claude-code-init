@@ -39,7 +39,7 @@ Step 5. 프로젝트 초기 코드 세팅
 | CSS 프레임워크 | Tailwind CSS |
 | 상태 관리 | 없음 (사용자 지정 시 추가) |
 | 배포 플랫폼 | Vercel (프론트엔드) + Supabase (백엔드) |
-| 패키지 매니저 | npm |
+| 패키지 매니저 | pnpm |
 
 ---
 
@@ -199,7 +199,7 @@ docs/prd.md  (새로 생성)
 ### 세팅 순서
 
 ```
-1. package.json 생성 (npm init)
+1. package.json 생성 (pnpm init)
 2. TypeScript 설정 (tsconfig.json)
 3. Biome 설정 (biome.json) — docs/lint-config.md 참조
 4. 폴더 구조 생성 — docs/project-structure.md 참조
