@@ -217,6 +217,78 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 - UI 수준의 권한 분기는 사용자 역할 정보를 기반으로 처리한다.
 - `service_role` 키는 서버 측(Edge Functions)에서만 사용한다.
 
+## CORS 설정
+
+### Supabase Edge Functions
+
+Edge Functions에서 CORS 헤더를 설정한다.
+
+```ts
+// supabase/functions/_shared/cors.ts
+export const corsHeaders = {
+  "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") ?? "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+};
+
+// Edge Function에서 사용
+import { corsHeaders } from "../_shared/cors.ts";
+
+Deno.serve(async (req) => {
+  // OPTIONS preflight 요청 처리
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  // 실제 로직
+  return new Response(JSON.stringify({ data }), {
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+});
+```
+
+### 규칙
+
+- 프로덕션에서는 `Access-Control-Allow-Origin`을 특정 도메인으로 제한한다. `*`를 사용하지 않는다.
+- 허용할 메서드와 헤더를 최소한으로 설정한다.
+
+## Rate Limiting
+
+### Supabase 기본 Rate Limiting
+
+Supabase는 프로젝트 단위로 기본 API Rate Limiting을 제공한다. 추가적인 제한이 필요하면 Edge Functions에서 구현한다.
+
+### Edge Functions에서의 Rate Limiting
+
+```ts
+// 간단한 IP 기반 rate limiting 예시
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 60;       // 요청 수
+const RATE_WINDOW = 60_000;  // 1분 (ms)
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    return false;
+  }
+
+  entry.count++;
+  return entry.count > RATE_LIMIT;
+}
+```
+
+### 적용 대상
+
+| 엔드포인트 | 제한 | 이유 |
+|-----------|------|------|
+| 로그인/회원가입 | 10회/분 | 무차별 대입 공격 방지 |
+| 비밀번호 재설정 | 3회/분 | 이메일 폭탄 방지 |
+| 파일 업로드 | 20회/분 | 스토리지 남용 방지 |
+| 일반 API | 60회/분 | 전반적인 남용 방지 |
+
 ## 환경변수 및 시크릿 관리
 
 ### Supabase 환경변수
@@ -278,19 +350,7 @@ VITE_SUPABASE_ANON_KEY=
 2. **입력 검증 테스트**: 비정상 입력(빈 값, 초과 길이, 특수문자, 스크립트 태그)에 대한 처리 확인
 3. **인증 우회 테스트**: 미인증 상태에서 보호된 리소스에 접근할 수 없는지 확인
 
-```ts
-// 권한 경계 테스트 예시
-it("다른 사용자의 데이터를 조회할 수 없다", async () => {
-  mockAuthenticated({ id: "user-1" });
-  await expect(getItemById("other-user-item-id")).rejects.toThrow();
-});
-
-// 인증 우회 테스트 예시
-it("미인증 상태에서 보호된 API를 호출하면 에러를 반환한다", async () => {
-  mockUnauthenticated();
-  await expect(createTodo({ title: "테스트" })).rejects.toThrow();
-});
-```
+> 보안 테스트 코드 예시와 TDD 통합 방법은 [테스트 가이드 > 보안 테스트 작성 예시](testing-guide.md#보안-테스트-작성-예시)를 참조한다.
 
 ## 의존성 취약점 스캔
 

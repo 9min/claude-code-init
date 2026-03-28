@@ -85,6 +85,22 @@
 | `useExhaustiveDependencies` | 훅 의존성 배열 누락 경고 |
 | `noExcessiveCognitiveComplexity` | 과도한 복잡도 경고 |
 
+### 규칙 위반 예시
+
+```ts
+// noExplicitAny 위반
+const data: any = fetchData();           // 나쁜 예
+const data: unknown = fetchData();       // 좋은 예 (unknown + 타입 가드)
+
+// useImportType 위반
+import { User } from "@/types/user";     // 나쁜 예 (런타임에 사용하지 않는 타입)
+import type { User } from "@/types/user"; // 좋은 예
+
+// noNonNullAssertion 위반
+const name = user!.name;                 // 나쁜 예
+const name = user?.name ?? "기본값";     // 좋은 예
+```
+
 ## import 정렬 규칙
 
 Biome의 `organizeImports`가 자동으로 import를 정렬한다.
@@ -161,6 +177,12 @@ pre-commit:
 pnpm add -D lefthook
 npx lefthook install
 ```
+
+### 동작 방식
+
+- `git commit` 실행 시 lefthook이 스테이징된 파일에 대해 `biome check --write`를 자동 실행한다.
+- **자동 수정 가능한 경우**: 파일이 자동으로 수정되고 스테이징에 추가된 후 커밋이 완료된다. (`stage_fixed: true`)
+- **자동 수정 불가능한 에러**: 커밋이 **중단**된다. 에러를 직접 수정한 후 다시 `git add` → `git commit`을 실행한다.
 
 ## CLI 명령어
 
