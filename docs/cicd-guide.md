@@ -277,7 +277,7 @@ npx supabase db push
 
 | 상황 | 조치 |
 |------|------|
-| UI 버그 (기능 동작에 영향 없음) | 핫픽스 브랜치 생성 → 수정 후 재배포 |
+| UI 버그 (기능 동작에 영향 없음) | [핫픽스](hotfix-guide.md) 브랜치 생성 → 수정 후 재배포 |
 | 주요 기능 장애 | Vercel 즉시 롤백 → 원인 분석 후 재배포 |
 | DB 마이그레이션 문제 | 역방향 마이그레이션 작성 → 적용 |
 | 보안 취약점 발견 | Vercel 즉시 롤백 + 긴급 패치 |
@@ -288,3 +288,4 @@ npx supabase db push
 - [테스트 가이드](testing-guide.md)
 - [린트 설정](lint-config.md)
 - [보안 가이드](security-guide.md)
+- [핫픽스 대응 가이드](hotfix-guide.md)

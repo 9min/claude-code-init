@@ -21,6 +21,7 @@ docs/
 ├── testing-guide.md
 ├── security-guide.md
 ├── cicd-guide.md
+├── hotfix-guide.md
 ├── code-review-checklist.md
 ├── error-handling.md
 ├── dev-environment.md
@@ -46,6 +47,7 @@ docs/
 | [docs/testing-guide.md](docs/testing-guide.md) | **테스트 코드 가이드.** TDD 사이클, Vitest 사용법, 테스트 파일 구조 및 작성 규칙을 안내한다. |
 | [docs/security-guide.md](docs/security-guide.md) | **보안 가이드.** OWASP Top 10 체크리스트, 인증/인가, RLS 정책, 입력 검증 등 보안 규칙을 정의한다. |
 | [docs/cicd-guide.md](docs/cicd-guide.md) | **CI/CD 설정 가이드.** Vercel 자동 배포, GitHub Actions 워크플로우, 배포 파이프라인 설정을 안내한다. |
+| [docs/hotfix-guide.md](docs/hotfix-guide.md) | **핫픽스 대응 가이드.** 프로덕션 긴급 장애 대응 워크플로우, 긴급도 분류, 코드 리뷰 간소화 기준, 배포 후 모니터링 절차를 정의한다. |
 | [docs/code-review-checklist.md](docs/code-review-checklist.md) | **코드 리뷰 체크리스트.** PR 리뷰 시 확인해야 할 기능 요구사항, 코드 품질, 보안, 성능 항목을 정리한다. |
 | [docs/error-handling.md](docs/error-handling.md) | **에러 핸들링 가이드.** Error Boundary, try-catch, Supabase `{ data, error }` 패턴 등 에러 처리 전략을 정의한다. |
 | [docs/dev-environment.md](docs/dev-environment.md) | **개발 환경 셋업 가이드.** 필수 도구, 환경 변수 설정, 로컬 개발 서버 실행 방법을 안내한다. |
@@ -85,7 +87,8 @@ CLAUDE.md (진입점)
 └─ 워크플로우·배포
    ├─ git-workflow.md
    ├─ commit-convention.md
-   └─ cicd-guide.md
+   ├─ cicd-guide.md
+   └─ hotfix-guide.md
 ```
 
 ---

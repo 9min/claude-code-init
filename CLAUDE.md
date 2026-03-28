@@ -90,6 +90,7 @@
 | [docs/testing-guide.md](docs/testing-guide.md) | 테스트 코드 가이드 |
 | [docs/security-guide.md](docs/security-guide.md) | 보안 가이드 |
 | [docs/cicd-guide.md](docs/cicd-guide.md) | CI/CD 설정 가이드 |
+| [docs/hotfix-guide.md](docs/hotfix-guide.md) | 핫픽스 대응 가이드 |
 | [docs/code-review-checklist.md](docs/code-review-checklist.md) | 코드 리뷰 체크리스트 |
 | [docs/error-handling.md](docs/error-handling.md) | 에러 핸들링 가이드 |
 | [docs/dev-environment.md](docs/dev-environment.md) | 개발 환경 셋업 가이드 |
