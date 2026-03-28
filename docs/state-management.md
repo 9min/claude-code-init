@@ -49,6 +49,8 @@ export function useTodos() {
 
 복잡한 프로젝트에서는 TanStack Query를 사용한다. 캐싱, 자동 재시도, 백그라운드 리페칭을 지원한다.
 
+> TanStack Query의 캐싱 설정(`staleTime`, `gcTime`)과 데이터 유형별 전략은 [성능 최적화 가이드 > 데이터 캐싱 전략](performance-guide.md#데이터-캐싱-전략)을 참조한다.
+
 ```tsx
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getTodos, createTodo } from "@/services/todoService";

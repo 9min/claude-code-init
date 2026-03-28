@@ -241,6 +241,47 @@ npx supabase functions deploy
 - [ ] E2E 테스트 통과 확인
 - [ ] 롤백 계획 수립
 
+## 롤백 전략
+
+### 프론트엔드 (Vercel) 롤백
+
+Vercel 대시보드에서 이전 배포로 즉시 롤백할 수 있다.
+
+1. Vercel 대시보드 > Deployments 탭 이동
+2. 롤백할 이전 배포를 선택
+3. 우측 `...` 메뉴 > "Promote to Production" 클릭
+
+```bash
+# CLI로 롤백하는 경우
+# 이전 배포 목록 확인 후 특정 배포를 프로덕션으로 승격
+vercel ls
+vercel promote <deployment-url>
+```
+
+### Supabase 마이그레이션 롤백
+
+마이그레이션은 되돌리기가 어렵다. 롤백이 필요한 경우 **역방향 마이그레이션 파일**을 새로 생성한다.
+
+```bash
+# 역방향 마이그레이션 생성
+npx supabase migration new rollback_feature_x
+
+# 생성된 파일에 역방향 SQL 작성 (예: 테이블 삭제, 컬럼 제거)
+# 이후 적용
+npx supabase db push
+```
+
+> 마이그레이션 작성 시 역방향 SQL을 주석으로 미리 기록해두면 롤백이 수월해진다.
+
+### 롤백 판단 기준
+
+| 상황 | 조치 |
+|------|------|
+| UI 버그 (기능 동작에 영향 없음) | 핫픽스 브랜치 생성 → 수정 후 재배포 |
+| 주요 기능 장애 | Vercel 즉시 롤백 → 원인 분석 후 재배포 |
+| DB 마이그레이션 문제 | 역방향 마이그레이션 작성 → 적용 |
+| 보안 취약점 발견 | Vercel 즉시 롤백 + 긴급 패치 |
+
 ## 관련 문서
 
 - [Git 워크플로우](git-workflow.md)

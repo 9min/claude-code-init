@@ -302,15 +302,205 @@ interface Toast {
 }
 ```
 
-## 접근성 (a11y) 기본 규칙
+## 공통 UI 컴포넌트 가이드
+
+프로젝트 전반에서 반복 사용되는 기본 컴포넌트의 구현 패턴을 정의한다. 아래 예시를 기반으로 프로젝트에 맞게 확장한다.
+
+### Button
+
+```tsx
+import { cn } from "@/utils/cn";
+
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+type ButtonSize = "sm" | "md" | "lg";
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  isLoading?: boolean;
+}
+
+const variantStyles: Record<ButtonVariant, string> = {
+  primary: "bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500",
+  secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600",
+  ghost: "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800",
+  danger: "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500",
+};
+
+const sizeStyles: Record<ButtonSize, string> = {
+  sm: "px-3 py-1.5 text-sm",
+  md: "px-4 py-2 text-sm",
+  lg: "px-6 py-3 text-base",
+};
+
+function Button({
+  variant = "primary",
+  size = "md",
+  isLoading,
+  disabled,
+  className,
+  children,
+  ...props
+}: ButtonProps) {
+  return (
+    <button
+      className={cn(
+        "inline-flex items-center justify-center font-medium rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+        variantStyles[variant],
+        sizeStyles[size],
+        (disabled || isLoading) && "opacity-50 cursor-not-allowed",
+        className
+      )}
+      disabled={disabled || isLoading}
+      {...props}
+    >
+      {isLoading && <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />}
+      {children}
+    </button>
+  );
+}
+```
+
+### Input
+
+```tsx
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+  error?: string;
+  hint?: string;
+}
+
+function Input({ label, error, hint, id, ...props }: InputProps) {
+  const inputId = id || label.replace(/\s+/g, "-").toLowerCase();
+  const errorId = `${inputId}-error`;
+  const hintId = `${inputId}-hint`;
+
+  return (
+    <div>
+      <label htmlFor={inputId} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        {label}
+        {props.required && <span className="text-red-500 ml-1" aria-hidden="true">*</span>}
+      </label>
+      <input
+        id={inputId}
+        className={cn(
+          "mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-800 border rounded-lg text-sm transition-colors",
+          "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+          error
+            ? "border-red-500 focus:ring-red-500"
+            : "border-gray-300 dark:border-gray-600"
+        )}
+        aria-required={props.required}
+        aria-invalid={!!error}
+        aria-describedby={[error && errorId, hint && hintId].filter(Boolean).join(" ") || undefined}
+        {...props}
+      />
+      {hint && !error && (
+        <p id={hintId} className="mt-1 text-sm text-gray-500 dark:text-gray-400">{hint}</p>
+      )}
+      {error && (
+        <p id={errorId} className="mt-1 text-sm text-red-600 dark:text-red-400" role="alert">{error}</p>
+      )}
+    </div>
+  );
+}
+```
+
+### Card
+
+```tsx
+interface CardProps {
+  children: React.ReactNode;
+  className?: string;
+  padding?: "sm" | "md" | "lg";
+}
+
+const paddingStyles = {
+  sm: "p-3",
+  md: "p-4 sm:p-6",
+  lg: "p-6 sm:p-8",
+};
+
+function Card({ children, className, padding = "md" }: CardProps) {
+  return (
+    <div className={cn(
+      "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm",
+      paddingStyles[padding],
+      className
+    )}>
+      {children}
+    </div>
+  );
+}
+```
+
+## 애니메이션 가이드라인
+
+### 기본 원칙
+
+- **목적이 있는 애니메이션만** 사용한다. 장식적 애니메이션은 지양한다.
+- **`prefers-reduced-motion`** 미디어 쿼리를 존중한다.
+- 애니메이션 지속 시간은 **150ms ~ 300ms** 범위를 기본으로 한다.
+
+### duration 기준
+
+| 용도 | duration | 예시 |
+|------|----------|------|
+| 마이크로 인터랙션 | 150ms | 버튼 hover, 색상 변경 |
+| 일반 트랜지션 | 200ms | 드롭다운 열기/닫기, 탭 전환 |
+| 복잡한 트랜지션 | 300ms | 모달 열기/닫기, 페이지 전환 |
+| 강조 애니메이션 | 500ms 이하 | 알림 등장, 토스트 슬라이드 |
+
+### easing 기준
+
+| 용도 | easing | Tailwind 클래스 |
+|------|--------|----------------|
+| 기본 전환 | `ease-in-out` | `ease-in-out` |
+| 등장 | `ease-out` | `ease-out` |
+| 퇴장 | `ease-in` | `ease-in` |
+
+### 사용 패턴
+
+```tsx
+// 버튼 hover 효과 (150ms)
+<button className="transition-colors duration-150 ease-in-out hover:bg-primary-700">
+
+// 드롭다운 열기 (200ms)
+<div className={cn(
+  "transition-all duration-200 ease-out",
+  isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1 pointer-events-none"
+)}>
+
+// 모달 오버레이 (300ms)
+<div className="transition-opacity duration-300 ease-in-out">
+```
+
+### 모션 감소 대응
+
+사용자가 시스템 설정에서 모션 감소를 요청한 경우, 애니메이션을 비활성화한다.
+
+```tsx
+// Tailwind에서 제공하는 motion-safe/motion-reduce 사용
+<div className="motion-safe:animate-bounce motion-reduce:animate-none">
+
+// 전역 CSS에서 일괄 대응
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+## 접근성 (a11y) 가이드
 
 ### 필수 준수 사항
 
 1. **시맨틱 HTML**: 적절한 HTML 요소를 사용한다. (`button`, `nav`, `main`, `article` 등)
-2. **대체 텍스트**: 모든 `img` 태그에 의미 있는 `alt` 속성을 제공한다.
+2. **대체 텍스트**: 모든 `img` 태그에 의미 있는 `alt` 속성을 제공한다. 장식용 이미지는 `alt=""`로 비워둔다.
 3. **키보드 탐색**: 모든 인터랙티브 요소는 키보드로 접근 가능해야 한다.
 4. **포커스 표시**: 포커스 상태가 시각적으로 명확해야 한다. (`focus-visible` 사용)
-5. **색상 대비**: 텍스트와 배경의 대비 비율 최소 4.5:1을 유지한다.
+5. **색상 대비**: 텍스트와 배경의 대비 비율 최소 4.5:1을 유지한다. (WCAG 2.1 AA 기준)
 6. **ARIA 속성**: 시맨틱 HTML로 불충분한 경우에만 ARIA를 사용한다.
 
 ```tsx
@@ -325,11 +515,54 @@ interface Toast {
 </div>
 ```
 
+### 키보드 탐색 규칙
+
+| 키 | 동작 |
+|----|------|
+| `Tab` | 다음 포커스 가능한 요소로 이동 |
+| `Shift + Tab` | 이전 포커스 가능한 요소로 이동 |
+| `Enter` / `Space` | 버튼 클릭, 링크 이동, 체크박스 토글 |
+| `Escape` | 모달/드롭다운 닫기 |
+| `Arrow Keys` | 탭 목록, 라디오 그룹, 드롭다운 항목 간 이동 |
+
+```tsx
+// 모달에서 포커스 트랩 및 Escape 처리
+function Modal({ isOpen, onClose, children }: ModalProps) {
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      {children}
+    </div>
+  );
+}
+```
+
+### 포커스 스타일
+
+```tsx
+// 프로젝트 전역 포커스 스타일 (tailwind.config.js 또는 global CSS)
+// focus-visible을 사용하여 마우스 클릭 시에는 포커스 링을 숨기고,
+// 키보드 탐색 시에만 표시한다.
+<button className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
+```
+
 ### 폼 접근성
 
 - 모든 입력 필드에 연결된 `label`을 제공한다.
 - 에러 메시지를 `aria-describedby`로 입력 필드에 연결한다.
 - 필수 필드에 `aria-required="true"`를 추가한다.
+- 에러 발생 시 `aria-invalid="true"`를 설정하고 `role="alert"`로 에러 메시지를 알린다.
 
 ```tsx
 <div>
@@ -338,9 +571,23 @@ interface Toast {
     id="email"
     type="email"
     aria-required="true"
+    aria-invalid={!!error}
     aria-describedby="email-error"
   />
   {error && <p id="email-error" role="alert">{error}</p>}
+</div>
+```
+
+### 스크린리더 유틸리티
+
+```tsx
+// 시각적으로는 숨기되 스크린리더에는 읽히는 유틸리티
+// Tailwind의 sr-only 클래스 활용
+<span className="sr-only">새 알림 3개</span>
+
+// 동적으로 변하는 콘텐츠를 스크린리더에 알림
+<div aria-live="polite" aria-atomic="true">
+  {statusMessage}
 </div>
 ```
 

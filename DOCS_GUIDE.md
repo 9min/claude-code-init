@@ -94,4 +94,20 @@ CLAUDE.md (진입점)
 
 1. **새 프로젝트 시작 시**: 이 저장소를 템플릿으로 복사한 뒤, `docs/prd.md`에 제품 요구사항을 작성한다.
 2. **AI 에이전트 활용 시**: `CLAUDE.md`가 자동으로 로드되어 모든 규칙이 적용된다. 상세 규칙이 필요할 때 각 문서를 참조한다.
-3. **팀 온보딩 시**: 이 문서(`DOCS_GUIDE.md`)를 먼저 읽고 전체 구조를 파악한 뒤, 필요한 문서를 순서대로 확인한다.
+3. **팀 온보딩 시**: 아래 권장 학습 경로를 따라 문서를 읽는다.
+
+## 신규 개발자 학습 경로
+
+프로젝트에 처음 합류한 개발자는 다음 순서로 문서를 읽는 것을 권장한다:
+
+1. **환경 구축**: [dev-environment.md](docs/dev-environment.md) → 로컬 개발 환경 설정 및 실행
+2. **프로젝트 이해**: [prd.md](docs/prd.md) → [project-structure.md](docs/project-structure.md) → 제품 목표와 코드 구조 파악
+3. **코드 작성 규칙**: [lint-config.md](docs/lint-config.md) → [design-guide.md](docs/design-guide.md) → [state-management.md](docs/state-management.md) → 코딩 컨벤션 숙지
+4. **워크플로우**: [git-workflow.md](docs/git-workflow.md) → [commit-convention.md](docs/commit-convention.md) → [testing-guide.md](docs/testing-guide.md) → 개발 프로세스 이해
+5. **심화**: [security-guide.md](docs/security-guide.md) → [data-modeling.md](docs/data-modeling.md) → [error-handling.md](docs/error-handling.md) → 필요 시 참조
+
+## 문서 갱신 규칙
+
+- **코드 변경 시**: 관련 문서의 코드 예시나 설정이 달라졌다면 함께 업데이트한다.
+- **기술 스택 변경 시**: CLAUDE.md의 기술 스택 섹션과 관련 가이드 문서를 모두 갱신한다.
+- **새 컨벤션 합의 시**: 해당 가이드 문서에 반영하고, 필요하면 CLAUDE.md 핵심 규칙도 업데이트한다.
