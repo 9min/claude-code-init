@@ -52,7 +52,7 @@
 ### 2. 브랜치 생성
 
 ```bash
-git checkout main
+git checkout main    # 또는 master (프로젝트의 기본 브랜치에 맞춤)
 git pull origin main
 git checkout -b hotfix/간결한-설명
 # 예: hotfix/auth-token-validation-fix
