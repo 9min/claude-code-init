@@ -392,7 +392,7 @@ function Input({ label, error, hint, id, ...props }: InputProps) {
         )}
         aria-required={props.required}
         aria-invalid={!!error}
-        aria-describedby={cn(error && errorId, hint && hintId)}
+        aria-describedby={[error && errorId, hint && hintId].filter(Boolean).join(" ") || undefined}
         {...props}
       />
       {hint && !error && (
