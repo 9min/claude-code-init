@@ -13,7 +13,7 @@
 |--------|------|------|
 | `feature/` | 새로운 기능 개발 | `feature/user-login` |
 | `fix/` | 버그 수정 | `fix/token-expiry-redirect` |
-| `hotfix/` | 프로덕션 긴급 수정 | `hotfix/critical-auth-error` |
+| `hotfix/` | 프로덕션 긴급 수정 ([상세 가이드](hotfix-guide.md)) | `hotfix/critical-auth-error` |
 | `refactor/` | 리팩토링 | `refactor/api-client-structure` |
 | `docs/` | 문서 작업 | `docs/api-documentation` |
 | `chore/` | 설정, 의존성 등 | `chore/update-dependencies` |
@@ -137,3 +137,4 @@ CI 워크플로우 설정은 [CI/CD 가이드](cicd-guide.md)를 참조한다.
 - [커밋 컨벤션](commit-convention.md)
 - [코드 리뷰 체크리스트](code-review-checklist.md)
 - [CI/CD 가이드](cicd-guide.md)
+- [핫픽스 대응 가이드](hotfix-guide.md)
