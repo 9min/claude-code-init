@@ -146,7 +146,7 @@ jobs:
 
 CI 실패 시 PR 머지를 차단하려면 GitHub Branch Protection Rules 설정이 필수다.
 
-`GitHub → Repository Settings → Branches → Add branch protection rule`에서 `main` 또는 `master` 브랜치에 다음을 설정한다.
+`GitHub → Repository Settings → Branches → Add branch protection rule`에서 `main` 브랜치에 다음을 설정한다.
 
 **1. "Require status checks to pass before merging" 활성화**
 
