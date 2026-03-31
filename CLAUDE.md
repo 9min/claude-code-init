@@ -77,6 +77,10 @@
 
 ## 상세 문서 참조
 
+@docs/git-workflow.md
+@docs/commit-convention.md
+@docs/testing-guide.md
+
 각 항목에 대한 상세 내용은 아래 문서를 참조한다.
 
 | 문서 | 설명 |
