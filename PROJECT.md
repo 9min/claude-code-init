@@ -1,7 +1,7 @@
 # PROJECT.md
 
 이 파일을 채운 후 Claude Code에 "시작해줘" 또는 "프로젝트 세팅해줘"라고 입력하면
-START_GUIDE.md의 전체 흐름을 자동으로 실행합니다.
+Claude가 `START_GUIDE.md`를 읽고 전체 세팅 흐름을 진행합니다.
 
 ---
 
