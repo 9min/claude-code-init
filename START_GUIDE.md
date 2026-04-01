@@ -1,15 +1,15 @@
 # 프로젝트 시작 가이드
 
 이 문서는 **Claude Code가 새 프로젝트를 세팅할 때 읽고 따라야 하는 작업 지침서**입니다.
-사용자가 프로젝트 주제를 알려주면, 이 가이드에 따라 문서를 수정/생성하고 초기 세팅을 진행합니다.
 
 ---
 
 ## 전체 흐름
 
 ```
-Step 1. 사용자에게 프로젝트 정보 확인
-Step 2. docs/prd.md 생성
+Step 0. PROJECT.md 확인 (작성 여부에 따라 Step 1 스킵 가능)
+Step 1. 사용자에게 프로젝트 정보 확인 (PROJECT.md가 비어 있는 경우에만)
+Step 2. docs/prd.md 작성
 Step 3. CLAUDE.md 수정
 Step 4. docs/ 가이드 문서 프로젝트별 조정 (필요 시)
 Step 5. 프로젝트 초기 코드 세팅
@@ -17,7 +17,25 @@ Step 5. 프로젝트 초기 코드 세팅
 
 ---
 
+## Step 0. PROJECT.md 확인
+
+**가장 먼저** `PROJECT.md`를 읽는다.
+
+### PROJECT.md가 채워져 있는 경우
+
+- 파일에서 프로젝트명, 설명, 핵심 기능, 목표 사용자, 기술 스택을 읽는다.
+- **Step 1(사용자 질문)을 건너뛰고** Step 2부터 바로 진행한다.
+- 기술 스택 항목이 비어 있으면 기본값을 사용한다.
+
+### PROJECT.md가 비어 있는 경우
+
+- Step 1로 이동하여 사용자에게 직접 질문한다.
+
+---
+
 ## Step 1. 사용자에게 프로젝트 정보 확인
+
+> **PROJECT.md가 채워져 있으면 이 단계를 건너뛴다.**
 
 아래 항목을 사용자에게 질문하여 확인한다. 사용자가 이미 제공한 정보는 다시 묻지 않는다.
 
@@ -35,6 +53,7 @@ Step 5. 프로젝트 초기 코드 세팅
 | 항목 | 기본값 |
 |------|--------|
 | 프론트엔드 프레임워크 | Vite + React + TypeScript |
+| 라우터 | TanStack Router (파일 기반 라우팅) |
 | 백엔드(BaaS) | Supabase (PostgreSQL, Auth, Storage, Edge Functions) |
 | CSS 프레임워크 | Tailwind CSS |
 | 상태 관리 | 없음 (사용자 지정 시 추가) |
@@ -43,14 +62,16 @@ Step 5. 프로젝트 초기 코드 세팅
 
 ---
 
-## Step 2. docs/prd.md 생성
+## Step 2. docs/prd.md 작성
 
-수집한 정보를 바탕으로 `docs/prd.md` 파일을 **새로 생성**한다.
+수집한 정보를 바탕으로 `docs/prd.md` 파일을 **프로젝트 내용으로 채워 작성**한다.
+
+> `docs/prd.md`는 이미 템플릿으로 존재한다. 신규 파일을 생성하는 것이 아니라, 기존 템플릿의 HTML 주석(`<!-- -->`)과 예시 텍스트를 실제 프로젝트 내용으로 교체한다.
 
 ### 파일 위치
 
 ```
-docs/prd.md  (새로 생성)
+docs/prd.md  (기존 템플릿을 내용으로 채울 것)
 ```
 
 ### 작성 구조
@@ -200,17 +221,22 @@ docs/prd.md  (새로 생성)
 
 ```
 1. package.json 생성 (pnpm init)
-2. TypeScript 설정 (tsconfig.json)
-3. Biome 설정 (biome.json) — docs/lint-config.md 참조
-4. 폴더 구조 생성 — docs/project-structure.md 참조
-5. 주요 의존성 설치 (@supabase/supabase-js 포함)
-6. Supabase 초기화 (npx supabase init)
-7. Supabase 클라이언트 설정 (src/lib/supabase.ts)
-8. 환경변수 설정 (.env.example, .env.local) — docs/dev-environment.md 참조
-9. 기본 설정 파일 생성 (.gitignore, .vscode/ 등)
-10. 상태 관리 설정 (필요 시) — docs/state-management.md 참조
-11. lefthook 설정 (pre-commit hook)
-12. GitHub Actions CI 워크플로우 — docs/cicd-guide.md 참조
+2. .nvmrc 생성 (Node.js 버전 명시 — 예: echo "22" > .nvmrc)
+3. TypeScript 설정 (tsconfig.json)
+4. Biome 설정 (biome.json) — docs/lint-config.md 참조
+5. 폴더 구조 생성 — docs/project-structure.md 참조
+6. 주요 의존성 설치 (@supabase/supabase-js, @tanstack/react-router 포함, Tailwind 사용 시 clsx, tailwind-merge 포함 — docs/design-guide.md 참조)
+7. TanStack Router 플러그인 설치 (pnpm add -D @tanstack/router-plugin)
+8. 테스트 의존성 설치 (vitest, @vitest/coverage-v8, @testing-library/react, @testing-library/jest-dom, jsdom)
+9. vitest.config.ts 생성 — docs/testing-guide.md 참조
+10. Supabase 초기화 (npx supabase init)
+11. Supabase 클라이언트 설정 (src/lib/supabase.ts)
+12. 환경변수 설정 (.env.example, .env.local) — docs/dev-environment.md 참조
+13. 기본 설정 파일 생성 (.gitignore, .vscode/ 등)
+14. TanStack Router 라우트 초기화 (src/routes/__root.tsx, src/routes/index.tsx)
+15. 상태 관리 설정 (필요 시) — docs/state-management.md 참조
+16. lefthook 설정 (pre-commit hook)
+17. GitHub Actions CI 워크플로우 — docs/cicd-guide.md 참조
 ```
 
 ### .gitignore 필수 포함 항목
@@ -239,11 +265,14 @@ VITE_SUPABASE_ANON_KEY=
 
 ## 체크리스트 (모든 단계 완료 후 확인)
 
-- [ ] `docs/prd.md`가 생성되었는가?
+- [ ] `PROJECT.md`를 읽었는가? (채워져 있으면 Step 1 스킵 여부 확인)
+- [ ] `docs/prd.md`가 프로젝트 내용으로 작성되었는가? (템플릿 HTML 주석 제거됨)
+- [ ] `.nvmrc` 파일이 생성되었는가? (Node.js 버전 명시)
 - [ ] `CLAUDE.md` 제목에 프로젝트명이 반영되었는가?
 - [ ] `CLAUDE.md` 기술 스택이 프로젝트에 맞게 업데이트되었는가?
 - [ ] `CLAUDE.md` 상세 문서 참조 테이블에 `docs/prd.md` 링크가 추가되었는가?
 - [ ] 수정한 `docs/` 문서가 `CLAUDE.md`와 모순되지 않는가?
 - [ ] 개발 환경 셋업이 완료되었는가? (환경변수, IDE 설정)
 - [ ] 프로젝트 초기 코드 세팅이 완료되었는가?
+- [ ] `vitest.config.ts`가 생성되었는가? (테스트 의존성 포함)
 - [ ] 모든 문서가 한국어로 작성되었는가?

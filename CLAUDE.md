@@ -3,9 +3,10 @@
 ## 기술 스택
 
 - **프론트엔드**: Vite + React + TypeScript
+- **라우터**: TanStack Router (파일 기반 라우팅)
 - **백엔드(BaaS)**: Supabase (PostgreSQL, Auth, Storage, Edge Functions)
 - **린트/포매팅**: Biome
-- **테스트**: Vitest
+- **테스트**: Vitest + Playwright (E2E)
 - **배포**: Vercel (프론트엔드), Supabase (백엔드)
 - **버전 관리**: Git (GitHub Flow)
 
@@ -79,7 +80,7 @@
 
 @docs/git-workflow.md
 @docs/commit-convention.md
-@docs/testing-guide.md
+@docs/maintainability-guide.md
 
 각 항목에 대한 상세 내용은 아래 문서를 참조한다.
 
@@ -102,3 +103,19 @@
 | [docs/performance-guide.md](docs/performance-guide.md) | 성능 최적화 가이드 |
 | [docs/data-modeling.md](docs/data-modeling.md) | 데이터 모델링 가이드 |
 | [docs/maintainability-guide.md](docs/maintainability-guide.md) | 유지보수 가이드 (아키텍처·설계 원칙) |
+
+## 신규 개발자 학습 경로
+
+프로젝트에 처음 합류한 개발자는 다음 순서로 문서를 읽는다.
+
+1. **환경 구축**: [dev-environment.md](docs/dev-environment.md)
+2. **프로젝트 이해**: [docs/prd.md](docs/prd.md) → [project-structure.md](docs/project-structure.md)
+3. **코드 작성 규칙**: [lint-config.md](docs/lint-config.md) → [design-guide.md](docs/design-guide.md) → [state-management.md](docs/state-management.md)
+4. **워크플로우**: [git-workflow.md](docs/git-workflow.md) → [commit-convention.md](docs/commit-convention.md) → [testing-guide.md](docs/testing-guide.md)
+5. **심화**: [security-guide.md](docs/security-guide.md) → [data-modeling.md](docs/data-modeling.md) → [error-handling.md](docs/error-handling.md)
+
+## 문서 갱신 규칙
+
+- **코드 변경 시**: 관련 문서의 코드 예시나 설정이 달라졌다면 함께 업데이트한다.
+- **기술 스택 변경 시**: 이 파일의 기술 스택 섹션과 관련 가이드 문서를 모두 갱신한다.
+- **새 컨벤션 합의 시**: 해당 가이드 문서에 반영하고, 필요하면 핵심 규칙도 업데이트한다.

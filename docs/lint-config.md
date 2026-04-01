@@ -167,7 +167,7 @@ pre-commit:
   commands:
     lint:
       glob: "*.{ts,tsx,js,jsx,json}"
-      run: npx biome check --write --staged {staged_files}
+      run: npx biome check --write {staged_files}
       stage_fixed: true
 ```
 
