@@ -226,7 +226,7 @@ export const Route = createRootRoute({
 
 ```tsx
 // src/routes/_authenticated/route.tsx — 인증 보호 레이아웃
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: ({ context }) => {
