@@ -176,6 +176,7 @@ jobs:
 | `type-check` | TypeScript 타입 검사 | O |
 | `test` | Vitest 테스트 실행 | O |
 | `build` | 빌드 성공 확인 | O |
+| `check-types-sync` | 마이그레이션 변경 시 타입 재생성 여부 확인 | O |
 | `e2e` | Playwright E2E 테스트 실행 | O |
 
 ### 브랜치 보호 규칙과 연동
@@ -197,6 +198,7 @@ CI 실패 시 PR 머지를 차단하려면 GitHub Branch Protection Rules 설정
 | `CI / 타입 검사` | TypeScript 타입 검사 |
 | `CI / 테스트` | Vitest 단위·통합 테스트 |
 | `CI / 빌드` | 빌드 성공 확인 |
+| `CI / 타입 동기화 확인` | 마이그레이션 변경 시 타입 재생성 여부 |
 | `CI / E2E 테스트` | Playwright E2E 테스트 |
 
 **2. "Require branches to be up to date before merging" 활성화**
