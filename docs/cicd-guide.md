@@ -63,8 +63,9 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".nvmrc"
           cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm biome check .
 
@@ -76,8 +77,9 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".nvmrc"
           cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm tsc --noEmit
 
@@ -89,8 +91,9 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".nvmrc"
           cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm vitest run --coverage
 
@@ -103,10 +106,29 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".nvmrc"
           cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
+
+  check-types-sync:
+    name: 타입 동기화 확인
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 마이그레이션 변경 시 database.ts 재생성 여부 확인
+        run: |
+          BASE_SHA=$(git merge-base origin/${{ github.base_ref }} HEAD)
+          if git diff --name-only $BASE_SHA HEAD | grep -q 'supabase/migrations/'; then
+            if ! git diff --name-only $BASE_SHA HEAD | grep -q 'src/types/database.ts'; then
+              echo "::error::마이그레이션이 변경되었으나 src/types/database.ts가 재생성되지 않았습니다."
+              echo "npx supabase gen types typescript --local > src/types/database.ts 를 실행 후 커밋해주세요."
+              exit 1
+            fi
+          fi
 
   e2e:
     name: E2E 테스트
@@ -117,9 +139,20 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: ".nvmrc"
           cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Supabase 로컬 서비스 시작
+        run: npx supabase start
+      - name: 환경변수 추출
+        run: |
+          echo "VITE_SUPABASE_URL=http://localhost:54321" >> $GITHUB_ENV
+          ANON_KEY=$(npx supabase status --output env | grep ANON_KEY | cut -d'=' -f2)
+          echo "VITE_SUPABASE_ANON_KEY=$ANON_KEY" >> $GITHUB_ENV
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test
         env:
@@ -130,6 +163,9 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+      - name: Supabase 종료
+        if: always()
+        run: npx supabase stop
 ```
 
 ### 워크플로우 구성

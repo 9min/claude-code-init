@@ -53,7 +53,21 @@ function Badge({ children, variant }: BadgeProps) {
 
 ### 조건부 스타일링
 
-`clsx` 또는 `cn` 유틸리티를 사용한다.
+`cn` 유틸리티를 사용한다. `clsx`와 `tailwind-merge`를 결합한 패턴이다.
+
+```bash
+pnpm add clsx tailwind-merge
+```
+
+```ts
+// src/utils/cn.ts
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
 
 ```tsx
 import { cn } from "@/utils/cn";
@@ -86,6 +100,39 @@ import { cn } from "@/utils/cn";
 
 각 색상은 50, 100, 200, ..., 900, 950 단계로 정의한다.
 
+`primary` 색상은 `tailwind.config.js`에서 반드시 정의해야 한다. 아래는 시작점으로 사용할 수 있는 예시다 (프로젝트 브랜드 색상으로 교체한다):
+
+```ts
+// tailwind.config.js
+import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
+
+export default {
+  darkMode: "class",
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        // 프로젝트 브랜드 색상으로 교체
+        primary: {
+          50:  "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb", // 기본 버튼, 링크
+          700: "#1d4ed8", // hover 상태
+          800: "#1e40af",
+          900: "#1e3a8a",
+          950: "#172554",
+        },
+      },
+    },
+  },
+} satisfies Config;
+```
+
 ### 타이포그래피
 
 ```
@@ -100,8 +147,31 @@ import { cn } from "@/utils/cn";
 └── 4xl     # 36px  - 페이지 제목
 ```
 
-- 본문 기본 폰트: 시스템 폰트 스택 사용
+- 본문 기본 폰트: **Inter** 권장 (한국어 비율이 높으면 Noto Sans KR)
 - 폰트 굵기: `normal (400)`, `medium (500)`, `semibold (600)`, `bold (700)`
+
+```bash
+# 영문 중심 프로젝트
+pnpm add @fontsource/inter
+
+# 한국어 비율이 높은 프로젝트
+pnpm add @fontsource/noto-sans-kr
+```
+
+```ts
+// main.tsx
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/inter/700.css";
+```
+
+```ts
+// tailwind.config.js theme.extend:
+fontFamily: {
+  sans: ["Inter", ...defaultTheme.fontFamily.sans],
+},
+```
 
 ### 스페이싱 스케일
 
@@ -264,7 +334,7 @@ function ErrorState({ message, onRetry }: ErrorStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <div className="mb-4 text-red-500">
-        <AlertCircleIcon className="w-12 h-12" />
+        <AlertCircle className="w-12 h-12" aria-hidden="true" />
       </div>
       <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
         문제가 발생했습니다
@@ -302,6 +372,29 @@ interface Toast {
 }
 ```
 
+## 아이콘
+
+**lucide-react**를 기본 아이콘 라이브러리로 사용한다.
+
+```bash
+pnpm add lucide-react
+```
+
+```tsx
+import { Loader2, AlertCircle, X, Check, ChevronDown } from "lucide-react";
+
+// 스피너
+<Loader2 className="h-4 w-4 animate-spin" />
+
+// 에러 아이콘
+<AlertCircle className="h-12 w-12 text-red-500" />
+
+// 닫기 버튼 (aria-hidden 필수)
+<button aria-label="닫기">
+  <X className="h-4 w-4" aria-hidden="true" />
+</button>
+```
+
 ## 공통 UI 컴포넌트 가이드
 
 프로젝트 전반에서 반복 사용되는 기본 컴포넌트의 구현 패턴을 정의한다. 아래 예시를 기반으로 프로젝트에 맞게 확장한다.
@@ -309,6 +402,7 @@ interface Toast {
 ### Button
 
 ```tsx
+import { Loader2 } from "lucide-react";
 import { cn } from "@/utils/cn";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
@@ -354,7 +448,7 @@ function Button({
       disabled={disabled || isLoading}
       {...props}
     >
-      {isLoading && <SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />}
+      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {children}
     </button>
   );
@@ -506,7 +600,7 @@ function Card({ children, className, padding = "md" }: CardProps) {
 ```tsx
 // 좋은 예
 <button aria-label="메뉴 닫기" onClick={handleClose}>
-  <XIcon aria-hidden="true" />
+  <X aria-hidden="true" />  {/* lucide-react */}
 </button>
 
 // 나쁜 예

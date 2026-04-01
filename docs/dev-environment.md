@@ -4,10 +4,12 @@
 
 | 도구 | 최소 버전 | 비고 |
 |------|----------|------|
-| Node.js | >= 20 | LTS 권장 |
+| Node.js | 22+ (.nvmrc 참조) | `import.meta.dirname` 사용을 위해 22 이상 필요 |
 | pnpm | >= 9 | `corepack enable`으로 활성화 |
 | Docker Desktop | 최신 | Supabase 로컬 실행용 |
-| Supabase CLI | 최신 | `pnpm add -D supabase`로 설치 |
+| Supabase CLI | 최신 | `npx supabase` 또는 `pnpm add -D supabase`로 설치 |
+
+> Node.js 버전은 프로젝트 루트의 `.nvmrc`가 단일 진실 소스다. `nvm use` 또는 `fnm use`로 자동 전환된다. `.nvmrc` 기본값은 `22`로 설정한다.
 
 ## Supabase 로컬 환경
 
@@ -17,9 +19,11 @@
 # 최초 1회: Supabase 프로젝트 초기화
 npx supabase init
 
-# 로컬 Supabase 서비스 시작 (Docker 필요)
+# 로컬 Supabase 서비스 시작 (Docker Desktop이 실행 중이어야 함)
 npx supabase start
 ```
+
+> `pnpm add -D supabase`로 로컬 설치한 경우 `npx supabase` 대신 `pnpm supabase` 또는 `./node_modules/.bin/supabase`를 사용한다. 어느 쪽이든 동일하게 동작하므로, 팀 내에서 한 가지로 통일한다.
 
 시작 후 로컬 서비스 URL:
 
