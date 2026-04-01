@@ -229,14 +229,16 @@ docs/prd.md  (기존 템플릿을 내용으로 채울 것)
 7. TanStack Router 플러그인 설치 (pnpm add -D @tanstack/router-plugin)
 8. 테스트 의존성 설치 (vitest, @vitest/coverage-v8, @testing-library/react, @testing-library/jest-dom, jsdom)
 9. vitest.config.ts 생성 — docs/testing-guide.md 참조
-10. Supabase 초기화 (npx supabase init)
-11. Supabase 클라이언트 설정 (src/lib/supabase.ts)
-12. 환경변수 설정 (.env.example, .env.local) — docs/dev-environment.md 참조
-13. 기본 설정 파일 생성 (.gitignore, .vscode/ 등)
-14. TanStack Router 라우트 초기화 (src/routes/__root.tsx, src/routes/index.tsx)
-15. 상태 관리 설정 (필요 시) — docs/state-management.md 참조
-16. lefthook 설정 (pre-commit hook)
-17. GitHub Actions CI 워크플로우 — docs/cicd-guide.md 참조
+10. E2E 테스트 의존성 설치 (pnpm add -D @playwright/test && npx playwright install chromium)
+11. playwright.config.ts 생성 — docs/testing-guide.md 참조
+12. Supabase 초기화 (npx supabase init)
+13. Supabase 클라이언트 설정 (src/lib/supabase.ts)
+14. 환경변수 설정 (.env.example, .env.local) — docs/dev-environment.md 참조
+15. 기본 설정 파일 생성 (.gitignore, .vscode/ 등)
+16. TanStack Router 라우트 초기화 (src/routes/__root.tsx, src/routes/index.tsx)
+17. 상태 관리 설정 (필요 시) — docs/state-management.md 참조
+18. lefthook 설정 (pre-commit hook)
+19. GitHub Actions CI 워크플로우 — docs/cicd-guide.md 참조
 ```
 
 ### .gitignore 필수 포함 항목
@@ -275,4 +277,5 @@ VITE_SUPABASE_ANON_KEY=
 - [ ] 개발 환경 셋업이 완료되었는가? (환경변수, IDE 설정)
 - [ ] 프로젝트 초기 코드 세팅이 완료되었는가?
 - [ ] `vitest.config.ts`가 생성되었는가? (테스트 의존성 포함)
+- [ ] `playwright.config.ts`가 생성되었는가? (Playwright chromium 설치 포함)
 - [ ] 모든 문서가 한국어로 작성되었는가?
