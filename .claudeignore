@@ -21,22 +21,19 @@ blob-report/
 .parcel-cache/
 .turbo/
 .eslintcache
-.biome-cache/
 *.tsbuildinfo
 
 # 환경변수 (민감 정보)
 .env
-.env.local
-.env.*.local
-.env.development
-.env.production
-.env.staging
+.env.*
 
 # OS / 에디터
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
 *.swp
 *.swo
 
@@ -60,6 +57,3 @@ supabase/.temp/
 
 # Storybook 빌드 결과
 storybook-static/
-
-# 타입 생성 파일 (자동 생성)
-src/types/supabase.ts
