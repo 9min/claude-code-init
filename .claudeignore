@@ -1,0 +1,65 @@
+# 빌드 아티팩트
+dist/
+build/
+out/
+.output/
+
+# 의존성
+node_modules/
+.pnp/
+.pnp.js
+
+# 테스트 결과 및 커버리지
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
+
+# 캐시
+.cache/
+.parcel-cache/
+.turbo/
+.eslintcache
+.biome-cache/
+*.tsbuildinfo
+
+# 환경변수 (민감 정보)
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.staging
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 로그
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 패키지 매니저 잠금 파일 (내용이 방대하고 직접 읽을 필요 없음)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Supabase 로컬 개발
+supabase/.branches/
+supabase/.temp/
+
+# Storybook 빌드 결과
+storybook-static/
+
+# 타입 생성 파일 (자동 생성)
+src/types/supabase.ts
