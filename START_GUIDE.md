@@ -185,31 +185,33 @@ docs/prd.md  (기존 템플릿을 내용으로 채울 것)
 
 ## Step 4. docs/ 가이드 문서 프로젝트별 조정
 
-대부분의 `docs/` 문서는 그대로 사용한다. **아래 조건에 해당하는 경우에만** 수정한다.
+> **기본 스택 전제**: 모든 `docs/` 문서는 기본 스택(Vite + React + TypeScript, Supabase, TanStack Router, Tailwind CSS, Biome, Vitest, Vercel)을 기준으로 작성되어 있다. **기본 스택을 그대로 사용하면 대부분 수정 없이 사용 가능하다.** 기술 스택이 다르면 아래 표를 참고하여 해당 문서를 반드시 수정한다.
 
-### 수정이 필요한 경우
+### 기술 스택별 문서 수정 가이드
 
-| 문서 | 수정 조건 | 수정 내용 |
-|------|----------|----------|
-| `project-structure.md` | 모노레포가 아닌 경우, 또는 폴더 구조가 다른 경우 | 실제 프로젝트 구조에 맞게 변경 |
-| `design-guide.md` | 디자인 시스템이 다른 경우 (색상, 폰트 등) | 프로젝트 브랜드에 맞게 변경 |
-| `cicd-guide.md` | Vercel이 아닌 다른 배포 플랫폼 사용 시 | 배포 플랫폼에 맞게 변경 |
-| `lint-config.md` | Biome 설정을 변경한 경우 | 변경된 설정 반영 |
-| `dev-environment.md` | Node.js 버전, IDE 설정 등이 다른 경우 | 프로젝트 환경에 맞게 변경 |
-| `state-management.md` | 상태 관리 라이브러리가 다른 경우 | 선택한 도구에 맞게 변경 |
-| `data-modeling.md` | DB 설계 규칙이 다른 경우 | 프로젝트 규칙에 맞게 변경 |
+| 문서 | 기본 스택 사용 시 | 기술 스택이 다를 때 수정 조건 |
+|------|-----------------|---------------------------|
+| `project-structure.md` | 그대로 사용 | 라우터 변경(TanStack Router 외), 폴더 구조 변경, 모노레포 사용 시 |
+| `design-guide.md` | 브랜드 색상만 변경 | CSS 프레임워크 변경(Tailwind 외), 디자인 시스템 변경 시 |
+| `cicd-guide.md` | 그대로 사용 | 배포 플랫폼 변경(Vercel 외), BaaS 변경(Supabase 외) 시 CI 워크플로우 전체 수정 |
+| `lint-config.md` | 그대로 사용 | 린터 변경(Biome 외) 시 |
+| `dev-environment.md` | 그대로 사용 | BaaS 변경 시 로컬 환경 명령어 수정, Node.js 버전 변경 시 |
+| `state-management.md` | 그대로 사용 | 상태 관리 라이브러리 변경 시 |
+| `data-modeling.md` | 그대로 사용 | **DB 변경 시 필수 수정** (Supabase/PostgreSQL 전용 마이그레이션, RLS 정책, 타입 생성이 포함됨) |
+| `testing-guide.md` | 그대로 사용 | **라우터 변경 시** 테스트 유틸 수정, **BaaS 변경 시** 모킹 패턴 수정, **테스트 프레임워크 변경 시** 전체 수정 |
+| `security-guide.md` | 그대로 사용 | **BaaS 변경 시 필수 수정** (Supabase RLS 기반 보안 규칙이 포함됨) |
+| `error-handling.md` | 그대로 사용 | **BaaS 변경 시** Supabase `{ data, error }` 패턴을 해당 BaaS 에러 패턴으로 교체 |
+| `performance-guide.md` | 그대로 사용 | **라우터 변경 시** 코드 스플리팅 예시 수정, SSR 도입 시 렌더링 전략 수정 |
+| `hotfix-guide.md` | 그대로 사용 | 배포 플랫폼 변경 시 롤백 절차만 수정 |
 
-### 수정하지 않는 문서
+### 항상 수정 불필요한 문서
 
 | 문서 | 이유 |
 |------|------|
-| `git-workflow.md` | GitHub Flow는 모든 프로젝트 공통 |
-| `commit-convention.md` | 커밋 규칙은 모든 프로젝트 공통 |
-| `testing-guide.md` | Vitest 전략은 모든 프로젝트 공통 |
-| `security-guide.md` | 보안 규칙은 모든 프로젝트 공통 |
-| `code-review-checklist.md` | 리뷰 기준은 모든 프로젝트 공통 |
-| `error-handling.md` | 에러 처리 패턴은 모든 프로젝트 공통 |
-| `performance-guide.md` | 성능 최적화 패턴은 모든 프로젝트 공통 |
+| `git-workflow.md` | GitHub Flow 브랜치 전략은 기술 스택과 무관 |
+| `commit-convention.md` | Gitmoji + Conventional Commits 형식은 기술 스택과 무관 |
+| `code-review-checklist.md` | 리뷰 기준은 기술 스택과 무관 (Supabase 체크항목만 해당 BaaS로 교체) |
+| `maintainability-guide.md` | 설계 원칙(SRP, 레이어드 아키텍처)은 기술 스택과 무관 |
 
 ---
 
