@@ -155,7 +155,8 @@ pnpm run dev
     "db:start": "npx supabase start",
     "db:stop": "npx supabase stop",
     "db:reset": "npx supabase db reset",
-    "db:types": "npx supabase gen types typescript --local > src/types/database.ts"
+    "db:types": "npx supabase gen types typescript --local > src/types/database.ts",
+    "prepare": "husky"
   }
 }
 ```
@@ -194,6 +195,50 @@ npx supabase gen types typescript --local > src/types/database.ts
 | `.env.local` 미인식 | Vite 환경변수 접두사 누락 | `VITE_` 접두사 확인 |
 | 마이그레이션 충돌 | 원격과 로컬 마이그레이션 불일치 | `supabase db reset`으로 로컬 초기화 |
 | `supabase start` 느림 | Docker 이미지 최초 다운로드 | 최초 실행 시 정상. 이후 빠름 |
+
+## Git Hooks (husky)
+
+커밋과 푸시 시점에 자동으로 품질 검사를 실행하여, 문제가 있는 코드가 리모트에 올라가는 것을 방지한다.
+
+### 설치
+
+```bash
+pnpm add -D husky
+pnpm exec husky init
+```
+
+`husky init`이 `.husky/` 디렉토리와 `pre-commit` 파일을 자동 생성한다.
+
+### pre-commit hook — 린트 + 타입 검사
+
+커밋할 때마다 린트와 타입 검사를 실행한다. **테스트는 여기서 실행하지 않는다** — 매 커밋마다 테스트를 돌리면 느려서 `--no-verify` 우회가 남용되기 때문이다.
+
+```bash
+# .husky/pre-commit
+pnpm biome check --write . && pnpm tsc --noEmit
+```
+
+### pre-push hook — 전체 테스트 실행
+
+푸시 전 1회만 전체 테스트를 실행한다. 테스트가 실패하면 푸시가 차단된다.
+
+```bash
+# .husky/pre-push
+pnpm vitest run
+```
+
+### hook 구성 요약
+
+| hook | 실행 시점 | 실행 내용 | 목적 |
+|------|-----------|-----------|------|
+| `pre-commit` | `git commit` | `biome check` + `tsc --noEmit` | 린트/타입 오류가 있는 커밋 방지 |
+| `pre-push` | `git push` | `vitest run` | 테스트 실패 코드가 리모트에 올라가는 것 방지 |
+
+### 주의사항
+
+- `--no-verify` 플래그로 hook을 우회하지 않는다. 우회가 필요한 상황이면 근본 원인을 먼저 해결한다.
+- CI가 최종 안전망이므로 hook이 모든 것을 잡을 필요는 없다. hook은 "빠른 피드백", CI는 "완전한 검증" 역할을 분담한다.
+- E2E 테스트(`playwright`)는 hook에 포함하지 않는다. 실행 시간이 길고 로컬 환경 의존성이 크기 때문에 CI에서만 실행한다.
 
 ## AI 토큰 최적화 (프로젝트 규모 확장 시)
 

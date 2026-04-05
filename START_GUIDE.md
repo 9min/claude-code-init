@@ -160,9 +160,9 @@ docs/prd.md  (기존 템플릿을 내용으로 채울 것)
 - 모든 API 응답은 `{ data, error, meta }` 형식을 따른다.
 ```
 
-#### 3-5. docs/prd.md 참조 링크 추가
+#### 3-5. docs/prd.md 참조 링크 확인
 
-상세 문서 참조 테이블에 PRD 링크를 추가한다.
+상세 문서 참조 테이블에 PRD 링크가 이미 존재하는지 확인한다. 없는 경우에만 추가한다.
 
 ```markdown
 | [docs/prd.md](docs/prd.md) | 제품 요구사항 문서 (PRD) |
@@ -237,8 +237,10 @@ docs/prd.md  (기존 템플릿을 내용으로 채울 것)
 15. 기본 설정 파일 생성 (.gitignore, .vscode/ 등)
 16. TanStack Router 라우트 초기화 (src/routes/__root.tsx, src/routes/index.tsx)
 17. 상태 관리 설정 (필요 시) — docs/state-management.md 참조
-18. lefthook 설정 (pre-commit hook)
-19. GitHub Actions CI 워크플로우 — docs/cicd-guide.md 참조
+18. .claudeignore 생성 — docs/dev-environment.md "AI 토큰 최적화" 참조
+19. .github/PULL_REQUEST_TEMPLATE.md 생성 — TDD 체크리스트 포함
+20. husky 설정 (pre-commit: 린트+타입, pre-push: 테스트) — docs/dev-environment.md "Git Hooks" 참조
+21. GitHub Actions CI 워크플로우 — docs/cicd-guide.md 참조
 ```
 
 ### .gitignore 필수 포함 항목
@@ -278,4 +280,7 @@ VITE_SUPABASE_ANON_KEY=
 - [ ] 프로젝트 초기 코드 세팅이 완료되었는가?
 - [ ] `vitest.config.ts`가 생성되었는가? (테스트 의존성 포함)
 - [ ] `playwright.config.ts`가 생성되었는가? (Playwright chromium 설치 포함)
+- [ ] `.claudeignore`가 생성되었는가?
+- [ ] `.github/PULL_REQUEST_TEMPLATE.md`가 생성되었는가? (TDD 체크리스트 포함)
+- [ ] husky pre-commit/pre-push hook이 설정되었는가?
 - [ ] 모든 문서가 한국어로 작성되었는가?
