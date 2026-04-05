@@ -43,6 +43,8 @@ git checkout -b feature/기능명
 ### 3. PR 생성
 
 - PR 제목은 작업 내용을 간결하게 요약한다.
+- PR 본문은 `.github/PULL_REQUEST_TEMPLATE.md` 템플릿을 따른다.
+- 템플릿에 포함된 **TDD 준수 확인** 체크리스트를 반드시 작성한다.
 - PR 본문에 다음을 포함한다:
   - 변경 사항 요약
   - 테스트 방법
