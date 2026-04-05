@@ -4,9 +4,7 @@
 
 ### 컴포넌트 구조 원칙
 
-- **단일 책임 원칙**: 하나의 컴포넌트는 하나의 역할만 담당한다.
-- **합성 패턴**: 작은 컴포넌트를 조합하여 복잡한 UI를 구성한다.
-- **Presentational/Container 분리**: UI 렌더링과 비즈니스 로직을 분리한다.
+컴포넌트 설계 원칙(단일 책임, 분리 기준, 커스텀 훅 패턴)은 [유지보수 가이드](maintainability-guide.md)를 따른다. 이 섹션에서는 **UI 코드 작성 시의 스타일 규칙**만 다룬다.
 
 ### Tailwind CSS 사용 규칙
 
@@ -236,16 +234,31 @@ export default {
 
 ### 테마 토글 훅
 
+외부 상태 관리 라이브러리 없이 `localStorage`와 시스템 설정을 기반으로 동작한다.
+
 ```tsx
-import { useEffect } from "react";
+// src/hooks/useTheme.ts
+import { useState, useEffect, useCallback } from "react";
+
+type Theme = "light" | "dark";
+
+function getInitialTheme(): Theme {
+  const stored = localStorage.getItem("theme") as Theme | null;
+  if (stored) return stored;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
 
 export function useTheme() {
-  const theme = useThemeStore((state) => state.theme);
-  const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
   }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  }, []);
 
   return { theme, toggleTheme };
 }
@@ -687,6 +700,7 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
 
 ## 관련 문서
 
+- [유지보수 가이드](maintainability-guide.md) — 컴포넌트 설계 원칙, 레이어드 아키텍처
 - [프로젝트 구조](project-structure.md)
 - [코드 리뷰 체크리스트](code-review-checklist.md)
 - [상태 관리 전략](state-management.md)
