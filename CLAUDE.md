@@ -120,7 +120,6 @@
 ## 상세 문서 참조
 
 @docs/git-workflow.md
-@docs/commit-convention.md
 @docs/maintainability-guide.md
 
 각 항목에 대한 상세 내용은 아래 문서를 참조한다.
@@ -160,3 +159,20 @@
 - **코드 변경 시**: 관련 문서의 코드 예시나 설정이 달라졌다면 함께 업데이트한다.
 - **기술 스택 변경 시**: 이 파일의 기술 스택 섹션과 관련 가이드 문서를 모두 갱신한다.
 - **새 컨벤션 합의 시**: 해당 가이드 문서에 반영하고, 필요하면 핵심 규칙도 업데이트한다.
+
+### 연쇄 업데이트 매트릭스
+
+문서를 수정할 때 **반드시** 아래 표에서 해당 문서를 찾아 "함께 확인할 문서"를 점검한다. 이 목록에 없는 연쇄 관계를 발견하면 이 표에 추가한다.
+
+| 수정한 문서 | 함께 확인할 문서 | 확인 내용 |
+|-------------|-----------------|-----------|
+| `CLAUDE.md` 기술 스택 | `docs/prd.md` 5장, `docs/project-structure.md` | 스택 목록 일치 여부 |
+| `CLAUDE.md` TDD 규칙 | `docs/testing-guide.md` TDD 섹션, `docs/code-review-checklist.md` 테스트 항목 | 규칙 일관성 |
+| `CLAUDE.md` 커밋 컨벤션 | `docs/commit-convention.md` | 예시와 형식 일치 |
+| `docs/dev-environment.md` | `START_GUIDE.md` Step 5, `docs/project-structure.md` 트리 | 도구/설정 파일명 일치 |
+| `docs/project-structure.md` 트리 | `START_GUIDE.md` Step 5 체크리스트, `docs/dev-environment.md` | 파일/폴더 목록 일치 |
+| `docs/testing-guide.md` | `CLAUDE.md` TDD 섹션, `docs/code-review-checklist.md` | TDD 규칙 일관성 |
+| `docs/cicd-guide.md` | `docs/git-workflow.md` 브랜치 보호 규칙 | CI job 이름 일치 |
+| `docs/design-guide.md` | `docs/project-structure.md` 컴포넌트 구조 | UI 패턴 일관성 |
+| `START_GUIDE.md` Step 5 | `docs/project-structure.md` 트리, 하단 체크리스트 | 단계와 트리/체크리스트 동기화 |
+| `.github/PULL_REQUEST_TEMPLATE.md` | `docs/git-workflow.md` PR 프로세스 | 체크리스트 항목 일치 |
