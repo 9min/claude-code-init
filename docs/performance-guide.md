@@ -139,25 +139,33 @@ CREATE INDEX idx_todos_user_created ON todos(user_id, created_at DESC);
 
 ### 코드 스플리팅
 
-페이지 단위로 `React.lazy`와 `Suspense`를 사용한다.
+TanStack Router의 `route.lazy()` 패턴을 사용하여 페이지 단위로 코드를 분할한다. 파일 기반 라우팅에서는 라우트 파일을 `.lazy.tsx`로 분리하면 자동으로 코드 스플리팅이 적용된다.
 
 ```tsx
-import { lazy, Suspense } from "react";
+// src/routes/dashboard.lazy.tsx — 컴포넌트만 lazy 로드
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
-const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
+export const Route = createLazyFileRoute("/dashboard")({
+  component: DashboardPage,
+});
 
-function App() {
-  return (
-    <Suspense fallback={<div>로딩 중...</div>}>
-      <Routes>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Routes>
-    </Suspense>
-  );
+function DashboardPage() {
+  return <div>대시보드</div>;
 }
 ```
+
+```tsx
+// src/routes/dashboard.tsx — 로더와 메타데이터 (번들에 포함)
+import { createFileRoute } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/dashboard")({
+  beforeLoad: ({ context }) => {
+    if (!context.session) throw redirect({ to: "/login" });
+  },
+});
+```
+
+`createLazyFileRoute`로 정의한 컴포넌트는 해당 라우트에 진입할 때만 로드된다. 로더(`beforeLoad`)는 메인 번들에 포함되어 네비게이션 전에 실행된다.
 
 ### 트리 셰이킹
 
