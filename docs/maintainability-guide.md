@@ -22,55 +22,13 @@ Infrastructure→  src/services/, src/lib/
 - Infrastructure가 Presentation을 import하면 안 된다.
 - 같은 레이어 내 순환 import도 금지한다.
 
-```ts
-// ✅ 올바른 방향: Presentation → Infrastructure
-// src/components/feature/TodoList.tsx
-import { useTodoList } from "@/hooks/useTodoList"; // Application 레이어
-
-// ✅ 올바른 방향: Application → Infrastructure
-// src/hooks/useTodoList.ts
-import { getTodos, createTodo } from "@/services/todoService"; // Infrastructure 레이어
-
-// ❌ 잘못된 방향: Infrastructure → Presentation
-// src/services/todoService.ts
-import { TodoList } from "@/components/feature/TodoList"; // 금지
-```
-
 ---
 
 ## 2. 컴포넌트 설계 원칙
 
 ### 단일 책임 원칙 (SRP)
 
-컴포넌트 하나는 한 가지 역할만 담당한다.
-
-```tsx
-// ❌ 하나의 컴포넌트가 목록 조회 + 항목 렌더링 + 폼 모두 담당
-function TodoPage() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [title, setTitle] = useState("");
-
-  useEffect(() => { /* 데이터 조회 로직 */ }, []);
-  const handleSubmit = () => { /* 생성 로직 */ };
-
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>{/* 폼 UI */}</form>
-      <ul>{todos.map(todo => <li key={todo.id}>{/* 항목 UI */}</li>)}</ul>
-    </div>
-  );
-}
-
-// ✅ 역할별로 분리
-function TodoPage() {
-  return (
-    <div>
-      <TodoForm />
-      <TodoList />
-    </div>
-  );
-}
-```
+컴포넌트 하나는 한 가지 역할만 담당한다. 데이터 조회·렌더링·폼 입력이 한 컴포넌트에 섞이면 분리한다.
 
 ### 컴포넌트 분리 기준
 
@@ -102,61 +60,6 @@ function TodoPage() {
 - JSX 렌더링 로직
 - 스타일 관련 코드
 - 컴포넌트 레이아웃 결정
-
-### 예시
-
-```ts
-// src/hooks/useTodoList.ts
-import { useState, useEffect } from "react";
-import { getTodos, createTodo, deleteTodo } from "@/services/todoService";
-import type { Todo, CreateTodoInput } from "@/types/todo";
-
-export function useTodoList() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    setIsLoading(true);
-    getTodos()
-      .then(setTodos)
-      .catch(setError)
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const handleCreate = async (input: CreateTodoInput) => {
-    const newTodo = await createTodo(input);
-    setTodos(prev => [newTodo, ...prev]);
-  };
-
-  const handleDelete = async (id: string) => {
-    await deleteTodo(id);
-    setTodos(prev => prev.filter(t => t.id !== id));
-  };
-
-  return { todos, isLoading, error, handleCreate, handleDelete };
-}
-```
-
-```tsx
-// src/components/feature/TodoList.tsx
-import { useTodoList } from "@/hooks/useTodoList";
-
-export function TodoList() {
-  const { todos, isLoading, error, handleDelete } = useTodoList();
-
-  if (isLoading) return <p>로딩 중...</p>;
-  if (error) return <p>오류가 발생했습니다.</p>;
-
-  return (
-    <ul>
-      {todos.map(todo => (
-        <TodoItem key={todo.id} todo={todo} onDelete={handleDelete} />
-      ))}
-    </ul>
-  );
-}
-```
 
 ---
 
@@ -205,59 +108,9 @@ src/
 - **3단계 이하**를 유지한다.
 - 초과 시 early return 또는 함수 추출을 사용한다.
 
-```ts
-// ❌ 중첩이 깊은 코드
-function processOrder(order: Order) {
-  if (order) {
-    if (order.items.length > 0) {
-      for (const item of order.items) {
-        if (item.inStock) {
-          // 처리 로직 (depth 4)
-        }
-      }
-    }
-  }
-}
-
-// ✅ early return으로 평탄화
-function processOrder(order: Order) {
-  if (!order) return;
-  if (order.items.length === 0) return;
-
-  for (const item of order.items) {
-    if (!item.inStock) continue;
-    processItem(item); // 세부 로직은 함수로 추출
-  }
-}
-```
-
 ### Prop Drilling 방지
 
 - props가 **2단계를 초과**하여 전달된다면 Context 또는 컴포지션 패턴을 사용한다.
-
-```tsx
-// ❌ Prop Drilling: A → B → C → D로 userId 전달
-function PageA() {
-  const { userId } = useAuth();
-  return <ComponentB userId={userId} />;
-}
-
-// ✅ Context 사용
-const UserContext = createContext<string | null>(null);
-
-function PageA() {
-  const { userId } = useAuth();
-  return (
-    <UserContext.Provider value={userId}>
-      <ComponentB />
-    </UserContext.Provider>
-  );
-}
-
-function ComponentD() {
-  const userId = useContext(UserContext); // 필요한 곳에서 직접 소비
-}
-```
 
 ---
 
