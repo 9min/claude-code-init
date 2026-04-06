@@ -212,7 +212,7 @@ Repository Admin도 CI를 우회하여 머지할 수 없도록 설정한다.
 > 상태 체크 항목은 GitHub Actions CI가 최소 1회 실행된 후 검색창에 표시된다.
 > workflow `name:` 또는 job `name:` 값을 변경하면 보호 규칙에 재등록해야 한다.
 
-모든 필수 체크가 통과해야만 PR 머지 버튼이 활성화된다. 상세 설정 방법은 [Git 워크플로우](git-workflow.md)를 참조한다.
+모든 필수 체크가 통과해야만 PR 머지 버튼이 활성화된다.
 
 ## Supabase 배포
 

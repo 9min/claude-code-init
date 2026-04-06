@@ -64,75 +64,7 @@ git checkout -b feature/기능명
 
 ## 브랜치 보호 규칙
 
-CI가 실패하면 PR 머지를 차단한다. 아래 설정을 반드시 적용한다.
-
-### GitHub 설정 경로
-
-`GitHub → Repository Settings → Branches → Add branch protection rule`
-
-- **Branch name pattern**: `main`
-
-### 적용 규칙
-
-| 규칙 | 설정 |
-|------|------|
-| Require a pull request before merging | ✅ 활성화 |
-| Required approvals | 1명 이상 |
-| Dismiss stale reviews when new commits are pushed | ✅ 활성화 |
-| Require status checks to pass before merging | ✅ 활성화 |
-| Require branches to be up to date before merging | ✅ 활성화 |
-| Do not allow bypassing the above settings | ✅ 활성화 (관리자도 예외 없음) |
-
-### 필수 상태 체크 등록 방법
-
-> **주의**: 상태 체크 이름은 GitHub Actions workflow 이름과 job 이름을 `/`로 구분한 형식이다.
-> 예: workflow 이름이 `CI`, job 이름이 `린트 검사`이면 → `CI / 린트 검사`
-
-#### 등록 절차
-
-1. `Require status checks to pass before merging`을 체크한다.
-2. `Require branches to be up to date before merging`을 체크한다.
-3. 검색창에 아래 항목을 **정확히** 입력하여 추가한다.
-
-| 검색어 | 설명 |
-|--------|------|
-| `CI / 린트 검사` | Biome 린트/포매팅 검사 |
-| `CI / 타입 검사` | TypeScript 타입 검사 |
-| `CI / 테스트` | Vitest 단위·통합 테스트 |
-| `CI / 빌드` | 빌드 성공 확인 |
-| `CI / 타입 동기화 확인` | 마이그레이션 변경 시 타입 재생성 여부 |
-| `CI / E2E 테스트` | Playwright E2E 테스트 |
-
-> 검색창에 항목이 표시되지 않으면 GitHub Actions CI가 해당 브랜치에서 최소 1회 실행된 후 다시 시도한다.
-
-#### workflow 이름 확인 방법
-
-`cicd-guide.md`의 워크플로우 파일에서 `name:` 필드가 workflow 이름이다:
-
-```yaml
-name: CI  # ← 이 값이 상태 체크 이름의 앞부분
-jobs:
-  lint:
-    name: 린트 검사  # ← 이 값이 상태 체크 이름의 뒷부분
-    # 최종 상태 체크 이름: "CI / 린트 검사"
-```
-
-### 설정 완료 후 동작
-
-- CI 체크 실패 시 PR 머지 버튼이 비활성화된다.
-- "Some checks were not successful" 메시지와 함께 실패한 Job 목록이 표시된다.
-- 모든 필수 체크가 통과해야만 머지 버튼이 활성화된다.
-- `Do not allow bypassing` 옵션 활성화 시 Repository Admin도 CI를 우회하여 머지할 수 없다.
-
-### 트러블슈팅
-
-| 증상 | 원인 | 해결 |
-|------|------|------|
-| 검색창에 상태 체크가 표시 안 됨 | CI가 1회도 실행된 적 없음 | PR을 하나 열어 CI를 먼저 실행한다 |
-| CI 실패해도 머지 가능 | 필수 체크로 등록 안 됨 | 위 절차대로 Job 이름을 정확히 등록한다 |
-| 이름이 달라서 매칭 안 됨 | workflow `name:` 또는 job `name:` 변경됨 | GitHub Actions 실행 후 실제 이름을 확인하여 재등록한다 |
-
-CI 워크플로우 설정은 [CI/CD 가이드](cicd-guide.md)를 참조한다.
+> CI 실패 시 PR 머지를 차단하도록 설정한다. 상세 설정 절차(필수 상태 체크, 트러블슈팅)는 [CI/CD 가이드](cicd-guide.md)를 참조한다.
 
 ## 관련 문서
 
